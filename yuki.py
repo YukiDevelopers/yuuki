@@ -6,6 +6,8 @@
 
 
 
+
+
 import importlib
 import re
 import sys
@@ -293,7 +295,7 @@ async def dm_command(app, yuki_prefix):
 
             url = message.command[1]
             if not url.startswith("http"):
-                url = f"https://raw.githubusercontent.com/aleksfolt/Yuki_Modules/main/{url}.py"
+                url = f"https://raw.githubusercontent.com/YukiDevelopers/Yuki_Modules/main/{url}.py"
 
             try:
                 async with aiohttp.ClientSession() as session:
