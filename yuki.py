@@ -8,6 +8,8 @@
 
 
 
+
+
 import importlib
 import re
 import sys
@@ -122,6 +124,7 @@ async def help_command(app, yuki_prefix):
             help_text += f"⌛ {yuki_prefix}ping - Show bot ping\n"
             help_text += f"💤 {yuki_prefix}off - Turn off the bot\n"
             help_text += f"🔄 {yuki_prefix}restart - Restart the bot\n"
+            help_text += f"🔄 {yuki_prefix}update - Update bot, wtf it's now version?\n"
             help_text += f"🔽 {yuki_prefix}dm - `{yuki_prefix}dm` link - Download module from link\n"
             help_text += f"🗑 {yuki_prefix}delm - `{yuki_prefix}delm` module name - Delete module\n"
             help_text += f"🗑 {yuki_prefix}addprefix - `{yuki_prefix}addprefix` prefix E.g: ?,! - Set a prefix\n"
