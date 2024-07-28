@@ -93,30 +93,30 @@ async def help_command(app, yuki_prefix):
     async def _help_command(_, message):
         try:
             modules, damaged_modules = await load_modules()
-            help_text = "**❄️ Yuki Userbot Commands ❄️**\n\n"
+            help_text = "**<emoji id=5431895003821513760>❄️</emoji> Yuki Userbot Commands <emoji id=5431895003821513760>❄️</emoji>**\n\n"
             help_text += f"**Modules loaded: {len(modules)}**\n"
             for module in modules:
                 module_name = module.__name__.split('.')[-1]
-                help_text += f"📦 `{module_name}` [{module.cinfo}]\n"
+                help_text += f"<emoji id=5431736674147114227>🗂</emoji> `{module_name}` [{module.cinfo}]\n"
 
             if damaged_modules:
                 help_text += "\n**Damaged modules:**\n"
                 for module_name, error in damaged_modules:
-                    help_text += f"❗ **{module_name}**\n"
+                    help_text += f"<emoji id=5467928559664242360>❗️</emoji> **{module_name}**\n"
                     help_text += f"Error: {error}\n\n"
 
             help_text += "\n**Standard commands:**\n"
             help_text += f"<emoji id=5334544901428229844>ℹ️</emoji> {yuki_prefix}info - Bot information\n"
-            help_text += f"⌛ {yuki_prefix}ping - Show bot ping\n"
-            help_text += f"💤 {yuki_prefix}off - Turn off the bot\n"
-            help_text += f"🔄 {yuki_prefix}restart - Restart the bot\n"
-            help_text += f"🔄 {yuki_prefix}update - Update bot, wtf it's now version?\n"
-            help_text += f"🔽 {yuki_prefix}dm - `{yuki_prefix}dm` link - Download module from link\n"
-            help_text += f"🗑 {yuki_prefix}delm - `{yuki_prefix}delm` module name - Delete module\n"
-            help_text += f"🗑 {yuki_prefix}addprefix - `{yuki_prefix}addprefix` prefix E.g: ?,! - Set a prefix\n"
-            help_text += f"📤 {yuki_prefix}unm - `{yuki_prefix}unm` module name - Send module file in chat\n"
-            help_text += f"📁 {yuki_prefix}lm - Reply `{yuki_prefix}lm` to the file. Installing a module from a file.\n"
-            help_text += f"✅ {yuki_prefix}check - Reply `{yuki_prefix}check` to the file check the file for bad practices"
+            help_text += f"<emoji id=5451646226975955576>⌛️</emoji> {yuki_prefix}ping - Show bot ping\n"
+            help_text += f"<emoji id=5451959871257713464>💤</emoji> {yuki_prefix}off - Turn off the bot\n"
+            help_text += f"<emoji id=5364105043907716258>🆙</emoji> {yuki_prefix}restart - Restart the bot\n"
+            help_text += f"<emoji id=5361979468887893611>🆕</emoji> {yuki_prefix}update - Update bot, wtf it's now version?\n"
+            help_text += f"<emoji id=5433811242135331842>📥</emoji> {yuki_prefix}dm - `{yuki_prefix}dm` link - Download module from link\n"
+            help_text += f"<emoji id=5469654973308476699>💣</emoji> {yuki_prefix}delm - `{yuki_prefix}delm` module name - Delete module\n"
+            help_text += f"<emoji id=5469913852462242978>🧨</emoji> {yuki_prefix}addprefix - `{yuki_prefix}addprefix` prefix E.g: ?,! - Set a prefix\n"
+            help_text += f"<emoji id=5433614747381538714>📤</emoji> {yuki_prefix}unm - `{yuki_prefix}unm` module name - Send module file in chat\n"
+            help_text += f"<emoji id=5431721976769027887>📂</emoji> {yuki_prefix}lm - Reply `{yuki_prefix}lm` to the file. Installing a module from a file.\n"
+            help_text += f"<emoji id=5427009714745517609>✅</emoji> {yuki_prefix}check - Reply `{yuki_prefix}check` to the file check the file for bad practices"
 
             await message.edit(help_text)
         except Exception as e:
