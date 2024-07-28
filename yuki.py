@@ -106,7 +106,7 @@ async def help_command(app, yuki_prefix):
                     help_text += f"Error: {error}\n\n"
 
             help_text += "\n**Standard commands:**\n"
-            help_text += f"ℹ️ {yuki_prefix}info - Bot information\n"
+            help_text += f"<emoji id=5334544901428229844>ℹ️</emoji> {yuki_prefix}info - Bot information\n"
             help_text += f"⌛ {yuki_prefix}ping - Show bot ping\n"
             help_text += f"💤 {yuki_prefix}off - Turn off the bot\n"
             help_text += f"🔄 {yuki_prefix}restart - Restart the bot\n"
