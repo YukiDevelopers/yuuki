@@ -105,7 +105,7 @@ async def help_command(app, yuki_prefix):
                     help_text += f"❗ **{module_name}**\n"
                     help_text += f"Error: {error}\n\n"
 
-            help_text += "**Standard commands:**\n"
+            help_text += "\n**Standard commands:**\n"
             help_text += f"ℹ️ {yuki_prefix}info - Bot information\n"
             help_text += f"⌛ {yuki_prefix}ping - Show bot ping\n"
             help_text += f"💤 {yuki_prefix}off - Turn off the bot\n"
