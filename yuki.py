@@ -162,8 +162,7 @@ async def info_command(app, yuki_prefix):
             await app.send_document(
                 chat_id=message.chat.id,
                 document=gif_url,
-                caption=caption_text,
-                disable_web_page_preview=True)
+                caption=caption_text)
         except Exception as e:
             await message.reply_text(f"An error occurred while executing the info command: {str(e)}")
 
