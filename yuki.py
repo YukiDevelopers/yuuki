@@ -167,6 +167,7 @@ async def info_command(app, yuki_prefix):
             await message.reply_text(f"An error occurred while executing the info command: {str(e)}")
 
 
+
 async def ping_command(app, yuki_prefix):
     @app.on_message(filters.me & filters.command("ping", prefixes=yuki_prefix))
     async def _ping_command(_, message):
