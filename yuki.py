@@ -118,7 +118,7 @@ async def help_command(app, yuki_prefix):
             help_text += f"🗑 {yuki_prefix}addprefix - `{yuki_prefix}addprefix` prefix E.g: ?,! - Set a prefix\n"
             help_text += f"📤 {yuki_prefix}unm - `{yuki_prefix}unm` module name - Send module file in chat\n"
             help_text += f"📁 {yuki_prefix}lm - Reply `{yuki_prefix}lm` to the file. Installing a module from a file.\n"
-            help_text += f"✅ {yuki_prefix}check - Reply `{yuki_prefix}check`to the file check the file for bad practices"
+            help_text += f"✅ {yuki_prefix}check - Reply `{yuki_prefix}check` to the file check the file for bad practices"
 
             await message.edit(help_text)
         except Exception as e:
