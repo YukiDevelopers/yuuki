@@ -97,9 +97,7 @@ async def help_command(app, yuki_prefix):
             help_text += f"**Modules loaded: {len(modules)}**\n"
             for module in modules:
                 module_name = module.__name__.split('.')[-1]
-                help_text += f"📦 **{module_name}**\n"
-                help_text += f"ℹ️ Description: {module.ccomand}\n"
-                help_text += f"🛠 Command: {module.cinfo}\n\n"
+                help_text += f"📦 `{module_name}` [{module.cinfo}] - {module.ccomand}\n"
 
             if damaged_modules:
                 help_text += "**Damaged modules:**\n"
