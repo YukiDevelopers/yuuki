@@ -100,7 +100,7 @@ async def help_command(app, yuki_prefix):
                 help_text += f"📦 `{module_name}` [{module.cinfo}]\n"
 
             if damaged_modules:
-                help_text += "**Damaged modules:**\n"
+                help_text += "\n**Damaged modules:**\n"
                 for module_name, error in damaged_modules:
                     help_text += f"❗ **{module_name}**\n"
                     help_text += f"Error: {error}\n\n"
@@ -394,8 +394,9 @@ async def restart_command(app, yuki_prefix):
     @app.on_message(filters.me & filters.command("restart", prefixes=yuki_prefix))
     async def _restart_command(_, message):
         try:
-            await message.edit("**🔄 You Yuki well be rebooted...**")
+            await message.edit("**🔄 You Yuki will be rebooted...**")
             os.execv(sys.executable, [sys.executable] + sys.argv)
+            await message.edit("**❄️ Yuki has been successfully rebooted!**")
         except Exception as e:
             await message.reply_text(f"An error occurred while executing the restart command: {str(e)}")
 
@@ -414,7 +415,9 @@ async def unm_command(app, yuki_prefix):
             if not os.path.exists(module_file):
                 await message.edit(f"❗File `{module_file}` not found.")
                 return
-            await app.send_document(message.chat.id, module_file)
+
+            caption = f"📂 Here is the module `{module_name}`\n\n❄️ .lm to this message to install."
+            await app.send_document(message.chat.id, module_file, caption=caption)
             await message.delete()
         except Exception as e:
             await message.reply_text(f"An error occurred while executing the unm command: {str(e)}")
