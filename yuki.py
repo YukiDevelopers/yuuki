@@ -151,16 +151,19 @@ async def info_command(app, yuki_prefix):
             user_last = user.last_name if user.last_name else ""
             username = f"[{user.first_name} {user_last}](https://t.me/{user.username})"
             ram_total, ram_used, ram_percent, system, release, version = get_system_info()
-            await app.send_message(
+            caption_text = (f"**❄️ 雪 Yuki**\n"
+                            f"__🔧Version: 1.2__\n\n"
+                            f"{username}@yuki-admin\n"
+                            f"      **Uptime:** {uptime}\n"
+                            f"      **RAM:** {ram_used:.2f} GB / {ram_total:.2f} GB ({ram_percent}%)\n"
+                            f"      **OS:** {system} {release}\n"
+                            f"      **Ping:** {ping_time}ms\n")
+            gif_url = "https://tinypic.host/images/2024/07/29/ezgif-6-baeda9490a.gif"
+            await app.send_document(
                 chat_id=message.chat.id,
-                text=f"**❄️ 雪 Yuki**\n"
-                     f"__🔧Version: 1.2__\n\n"
-                     f"{username}@yuki-admin\n"
-                     f"      **Uptime:** {uptime}\n"
-                     f"      **RAM:** {ram_used:.2f} GB / {ram_total:.2f} GB ({ram_percent}%)\n"
-                     f"      **OS:** {system} {release}\n"
-                     f"      **Ping:** {ping_time}ms\n"
-                , disable_web_page_preview=True)
+                document=gif_url,
+                caption=caption_text,
+                disable_web_page_preview=True)
         except Exception as e:
             await message.reply_text(f"An error occurred while executing the info command: {str(e)}")
 
