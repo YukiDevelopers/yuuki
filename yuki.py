@@ -150,7 +150,7 @@ async def info_command(app, yuki_prefix):
             ram_total, ram_used, ram_percent, system, release, version = get_system_info()
             caption_text = (f"**<emoji id=5431895003821513760>❄️</emoji> 雪 Yuki**\n"
                             f"__🔧Version: 1.2__\n\n"
-                            f"{message.from_user.first_name}@yuki-user\n"
+                            f"{message.from_user.first_name}@yuki-userbot\n"
                             f"      **Uptime:** {uptime}\n"
                             f"      **RAM:** {ram_used:.2f} GB / {ram_total:.2f} GB ({ram_percent}%)\n"
                             f"      **OS:** {system} {release}\n"
