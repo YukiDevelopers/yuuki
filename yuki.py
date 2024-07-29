@@ -178,7 +178,7 @@ async def ping_command(app, yuki_prefix):
             ping_time = round((ping_end_time - ping_start_time) * 1000)
             uptime_seconds = int(round(time.time() - start_time))
             uptime = str(timedelta(seconds=uptime_seconds))
-            await msg.edit(f"**<emoji id=5188666899860298925>🌒 </emoji> Your ping: {ping_time} ms**\n**<emoji id=5451646226975955576>⌛️</emoji> Uptime: {uptime}**")
+            await msg.edit(f"**<emoji id=5188666899860298925>🌒</emoji> Your ping: {ping_time} ms**\n**<emoji id=5451646226975955576>⌛️</emoji> Uptime: {uptime}**")
         except Exception as e:
             await message.reply_text(f"An error occurred while executing the ping command: {str(e)}")
 
