@@ -1,3 +1,7 @@
+
+
+
+
 import importlib
 import re
 import sys
@@ -117,6 +121,7 @@ async def help_command(app, yuki_prefix):
             help_text += f"<emoji id=5433614747381538714>📤</emoji> {yuki_prefix}unm - `{yuki_prefix}unm` module name - Send module file in chat\n"
             help_text += f"<emoji id=5431721976769027887>📂</emoji> {yuki_prefix}lm - Reply `{yuki_prefix}lm` to the file. Installing a module from a file.\n"
             help_text += f"<emoji id=5427009714745517609>✅</emoji> {yuki_prefix}check - Reply `{yuki_prefix}check` to the file check the file for bad practices"
+            help_text += f"<emoji id=5427009714745517609>✅</emoji> {yuki_prefix}eval - `{yuki_prefix}eval` to complete code."
 
             await message.edit(help_text)
         except Exception as e:
@@ -134,8 +139,18 @@ def get_system_info():
     version = platform.version()
 
     return ram_total, ram_used, ram_percent, system, release, version
-
-
+async def eval_command(app, yuki_prefix):
+    @app.on_message(filters.me & filters.command("eval", prefixes=yuki_prefix))
+    async def eval_command(_, message):
+        if len(message.command) > 1:
+            code = " ".join(message.command[1:])
+            try:
+                result = eval(code)
+                await message.edit_text(f"Результат: `{result}`")
+            except Exception as e:
+                await message.edit_text(f"Ошибка: `{e}`")
+        else:
+            await message.edit_text("Укажите код для выполнения")
 async def info_command(app, yuki_prefix):
     @app.on_message(filters.me & filters.command("info", prefixes=yuki_prefix))
     async def _info_command(_, message):
@@ -151,7 +166,7 @@ async def info_command(app, yuki_prefix):
             user_last = user.last_name if user.last_name else ""
             username = f"[{user.first_name} {user_last}](https://t.me/{user.username})"
             ram_total, ram_used, ram_percent, system, release, version = get_system_info()
-            caption_text = (f"**<emoji id=5431895003821513760>❄️</emoji> 雪 Yuki**\n"
+            caption_text = (f"**❄️ 雪 Yuki**\n"
                             f"__🔧Version: 1.2__\n\n"
                             f"{username}@yuki-admin\n"
                             f"      **Uptime:** {uptime}\n"
@@ -178,7 +193,7 @@ async def ping_command(app, yuki_prefix):
             ping_time = round((ping_end_time - ping_start_time) * 1000)
             uptime_seconds = int(round(time.time() - start_time))
             uptime = str(timedelta(seconds=uptime_seconds))
-            await msg.edit(f"**<emoji id=5188666899860298925>🌒 </emoji> Your ping: {ping_time} ms**\n**<emoji id=5451646226975955576>⌛️</emoji> Uptime: {uptime}**")
+            await msg.edit(f"**🕛 Your ping: {ping_time} ms**\n**⏳ Uptime: {uptime}**")
         except Exception as e:
             await message.reply_text(f"An error occurred while executing the ping command: {str(e)}")
 
@@ -194,7 +209,7 @@ async def check_file(app, yuki_prefix):
                     file_path = os.path.join(os.getcwd(), filename)
                     await client.download_media(message.reply_to_message.document.file_id, file_path)
                 else:
-                    await message.edit("<emoji id=5465665476971471368>❌</emoji> Please ensure this is a Python file.")
+                    await message.edit("❌ Please ensure this is a Python file.")
                     return
             elif message.text:
                 url = message.text.split(maxsplit=1)[1].strip()
@@ -205,7 +220,7 @@ async def check_file(app, yuki_prefix):
                     with open(file_path, 'wb') as file:
                         file.write(response.content)
                 else:
-                    await message.edit("<emoji id=5465665476971471368>❌</emoji> Failed to retrieve the file from the URL.")
+                    await message.edit("❌ Failed to retrieve the file from the URL.")
                     return
             elif message.document:
                 if message.document.mime_type == "text/x-python":
@@ -213,7 +228,7 @@ async def check_file(app, yuki_prefix):
                     file_path = os.path.join(os.getcwd(), filename)
                     await client.download_media(message.document.file_id, file_path)
                 else:
-                    await message.edit("<emoji id=5465665476971471368>❌</emoji> Please send a Python file.")
+                    await message.edit("❌ Please send a Python file.")
                     return
 
             if file_path:
@@ -224,16 +239,16 @@ async def check_file(app, yuki_prefix):
                 response_text = ""
                 for risk_level, methods in found_methods.items():
                     if methods:
-                        response_text += f"<emoji id=5470049770997292425>🌡</emoji> {risk_level.capitalize()}: {' '.join(methods)}\n"
+                        response_text += f"⚠️ {risk_level.capitalize()}: {' '.join(methods)}\n"
                 if response_text:
                     await message.reply_text(response_text)
                 else:
-                    await message.edit("<emoji id=5427009714745517609>✅</emoji> No dangerous methods found in the file.")
+                    await message.edit("✅ No dangerous methods found in the file.")
             else:
-                await message.edit("<emoji id=5465665476971471368>❌</emoji> Error occurred during file processing.")
+                await message.edit("❌ Error occurred during file processing.")
 
         except Exception as e:
-            await message.edit(f"<emoji id=5465665476971471368>❌</emoji> Error occurred: {str(e)}")
+            await message.edit(f"❌ Error occurred: {str(e)}")
 
 async def update_command(app, yuki_prefix):
     @app.on_message(filters.me & filters.command("update", prefixes=yuki_prefix))
@@ -244,7 +259,7 @@ async def update_command(app, yuki_prefix):
                     response.raise_for_status()
                     commits = await response.json()
                     if not commits:
-                        await message.edit("<emoji id=5465665476971471368>❌</emoji> Bot not found in the repository.")
+                        await message.edit("❌ Bot not found in the repository.")
                         return
                     last_commit_hash = commits[0]["sha"]
 
@@ -253,7 +268,7 @@ async def update_command(app, yuki_prefix):
                 with open(local_commit_hash_file, "r") as file:
                     local_commit_hash = file.read().strip()  
                 if local_commit_hash == last_commit_hash:
-                    await message.edit(f"<emoji id=5467928559664242360>❗️</emoji> Bot is already up to date. Version: {local_commit_hash[:7]}")
+                    await message.edit(f"❗️Bot is already up to date. Version: {local_commit_hash[:7]}")
                     return
 
             try:
@@ -270,7 +285,7 @@ async def update_command(app, yuki_prefix):
 
                         await message.delete()
                         await message.reply_text(
-                            f"<emoji id=5427009714745517609>✅</emoji> File `{file_name}` successfully downloaded and saved.\n\nVersion: {last_commit_hash[:7]}")
+                            f"✅ File `{file_name}` successfully downloaded and saved.\n\nVersion: {last_commit_hash[:7]}")
                         os.execv(sys.executable, [sys.executable] + sys.argv)
             except aiohttp.ClientError as e:
                 await message.reply_text(f"Error downloading file: {str(e)}")
@@ -282,7 +297,7 @@ async def dm_command(app, yuki_prefix):
     async def _dm_command(_, message):
         try:
             if len(message.command) < 2:
-                await message.edit("<emoji id=5467928559664242360>❗️</emoji> Please provide a link to the file or module name.")
+                await message.edit("❗Please provide a link to the file or module name.")
                 return
 
             url = message.command[1]
@@ -293,7 +308,7 @@ async def dm_command(app, yuki_prefix):
                 async with aiohttp.ClientSession() as session:
                     async with session.get(url) as response:
                         if response.status == 404:
-                            await message.edit(f"<emoji id=5465665476971471368>❌</emoji> Module `{url}` not found in the repository.")
+                            await message.edit(f"❌ Module `{url}` not found in the repository.")
                             return
                         response.raise_for_status()
                         file_name = os.path.basename(url)
@@ -301,7 +316,7 @@ async def dm_command(app, yuki_prefix):
 
                         modules_list = await read_json(modules_file)
                         if module_name in modules_list:
-                            await message.edit(f"<emoji id=5467928559664242360>❗️</emoji> Module `{module_name}` already exists in `{modules_file}`.")
+                            await message.edit(f"❗Module `{module_name}` already exists in `{modules_file}`.")
                             return
 
                         async with aiofiles.open(file_name, 'wb') as file:
@@ -312,7 +327,7 @@ async def dm_command(app, yuki_prefix):
 
                         await message.delete()
                         await message.reply_text(
-                            f"<emoji id=5427009714745517609>✅</emoji> File `{file_name}` successfully downloaded and saved.\n\nLink: `{url}`")
+                            f"✅ File `{file_name}` successfully downloaded and saved.\n\nLink: `{url}`")
                         os.execv(sys.executable, [sys.executable] + sys.argv)
             except aiohttp.ClientError as e:
                 await message.reply_text(f"Error downloading file: {str(e)}")
@@ -327,17 +342,17 @@ async def load_module(app: Client, yuki_prefix):
         file = message if message.document else reply if reply and reply.document else None
 
         if not file:
-            await message.edit("<emoji id=5465665476971471368>❌</emoji> A reply or a document is needed!")
+            await message.edit("❌ A reply or a document is needed!")
             return
 
         if not file.document.file_name.endswith(".py"):
-            await message.edit("<emoji id=5465665476971471368>❌</emoji> Only .py files are supported!")
+            await message.edit("❌ Only .py files are supported!")
             return
 
         filename = file.document.file_name
         module_name = filename.split(".py")[0]
 
-        await message.edit(f"<emoji id=5431895003821513760>❄️</emoji> Loading module **{module_name}**...")
+        await message.edit(f"❄️ Loading module **{module_name}**...")
 
         file_path = os.path.join(os.getcwd(), filename)
         await file.download(file_path)
@@ -347,7 +362,7 @@ async def load_module(app: Client, yuki_prefix):
             modules_list.append(module_name)
         await write_json(modules_file, modules_list)
 
-        await message.edit(f"<emoji id=5431895003821513760>❄️</emoji> Module **{module_name}** successfully loaded!")
+        await message.edit(f"❄️ Module **{module_name}** successfully loaded!")
         os.execv(sys.executable, [sys.executable] + sys.argv)
 
 
@@ -356,7 +371,7 @@ async def delm_command(app, yuki_prefix):
     async def _delm_command(_, message):
         try:
             if len(message.command) < 2:
-                await message.edit("<emoji id=5467928559664242360>❗️</emoji> Please provide the module name to delete.")
+                await message.edit("❗Please provide the module name to delete.")
                 return
 
             module_name = message.command[1]
@@ -364,7 +379,7 @@ async def delm_command(app, yuki_prefix):
 
             modules_list = await read_json(modules_file)
             if module_name not in modules_list:
-                await message.edit(f"<emoji id=5467928559664242360>❗️</emoji> Module `{module_name}` not found in `{modules_file}`.")
+                await message.edit(f"❗Module `{module_name}` not found in `{modules_file}`.")
                 return
 
             modules_list.remove(module_name)
@@ -373,10 +388,10 @@ async def delm_command(app, yuki_prefix):
             if os.path.exists(module_file):
                 os.remove(module_file)
                 await message.edit(
-                    f"<emoji id=5427009714745517609>✅</emoji> Module `{module_name}` successfully deleted from `{modules_file}` and file `{module_file}` deleted.")
+                    f"✅ Module `{module_name}` successfully deleted from `{modules_file}` and file `{module_file}` deleted.")
             else:
                 await message.edit(
-                    f"<emoji id=5427009714745517609>✅</emoji> Module `{module_name}` successfully deleted from `{modules_file}`, but file `{module_file}` not found.")
+                    f"✅ Module `{module_name}` successfully deleted from `{modules_file}`, but file `{module_file}` not found.")
 
             os.execv(sys.executable, [sys.executable] + sys.argv)
         except Exception as e:
@@ -387,7 +402,7 @@ async def off_command(app, yuki_prefix):
     @app.on_message(filters.me & filters.command("off", prefixes=yuki_prefix))
     async def _off_command(_, message):
         try:
-            await message.edit("**<emoji id=5451959871257713464>💤</emoji> Turning off the userbot...**")
+            await message.edit("**💤 Turning off the userbot...**")
             await app.stop()
         except Exception as e:
             await message.reply_text(f"An error occurred while executing the off command: {str(e)}")
@@ -397,8 +412,9 @@ async def restart_command(app, yuki_prefix):
     @app.on_message(filters.me & filters.command("restart", prefixes=yuki_prefix))
     async def _restart_command(_, message):
         try:
-            await message.edit("**<emoji id=5361979468887893611>🆕</emoji> You Yuki will be rebooted...**")
+            await message.edit("**🔄 You Yuki will be rebooted...**")
             os.execv(sys.executable, [sys.executable] + sys.argv)
+            await message.edit("**❄️ Yuki has been successfully rebooted!**")
         except Exception as e:
             await message.reply_text(f"An error occurred while executing the restart command: {str(e)}")
 
@@ -408,17 +424,17 @@ async def unm_command(app, yuki_prefix):
     async def _unm_command(_, message):
         try:
             if len(message.command) < 2:
-                await message.edit("<emoji id=5467928559664242360>❗️</emoji> Please provide the module name to send.")
+                await message.edit("❗Please provide the module name to send.")
                 return
 
             module_name = message.command[1]
             module_file = f"{module_name}.py"
 
             if not os.path.exists(module_file):
-                await message.edit(f"<emoji id=5467928559664242360>❗️</emoji> File `{module_file}` not found.")
+                await message.edit(f"❗File `{module_file}` not found.")
                 return
 
-            caption = f"<emoji id=5431721976769027887>📂</emoji> Here is the module `{module_name}`\n\n<emoji id=5431895003821513760>❄️</emoji> .lm to this message to install."
+            caption = f"📂 Here is the module `{module_name}`\n\n❄️ .lm to this message to install."
             await app.send_document(message.chat.id, module_file, caption=caption)
             await message.delete()
         except Exception as e:
@@ -430,7 +446,7 @@ async def addprefix_command(app, yuki_prefix):
     async def _addprefix_command(_, message):
         try:
             if len(message.command) < 2:
-                await message.edit("<emoji id=5467928559664242360>❗️</emoji> Please provide the new prefix.")
+                await message.edit("❗Please provide the new prefix.")
                 return
 
             new_prefix = message.command[1]
@@ -442,7 +458,7 @@ async def addprefix_command(app, yuki_prefix):
             global yuki_prefix
             yuki_prefix = new_prefix
 
-            await message.reply_text(f"<emoji id=5427009714745517609>✅</emoji> Prefix successfully changed to `{new_prefix}`.")
+            await message.reply_text(f"✅ Prefix successfully changed to `{new_prefix}`.")
             await message.delete()
         except Exception as e:
             await message.reply_text(f"An error occurred while executing the addprefix command: {str(e)}")
@@ -456,6 +472,9 @@ async def load_and_exec_modules(app):
                 module.register_module(app)
     except Exception as e:
         logger.error(f"An error occurred while loading modules: {str(e)}")
+async def notacommand(app, message):
+    if not yuki_prefix:
+        await message.reply_text('**I don\'t have this command, bro**')
 
 def main():
     loop = asyncio.get_event_loop()
@@ -474,6 +493,7 @@ def main():
     loop.run_until_complete(load_module(app, yuki_prefix))
     loop.run_until_complete(check_file(app, yuki_prefix))
     loop.run_until_complete(update_command(app, yuki_prefix))
+    loop.run_until_complete(eval_command(app, yuki_prefix))
 
     app.run()
 
