@@ -1,7 +1,3 @@
-
-
-
-
 import importlib
 import re
 import sys
@@ -121,7 +117,7 @@ async def help_command(app, yuki_prefix):
             help_text += f"<emoji id=5433614747381538714>📤</emoji> {yuki_prefix}unm - `{yuki_prefix}unm` module name - Send module file in chat\n"
             help_text += f"<emoji id=5431721976769027887>📂</emoji> {yuki_prefix}lm - Reply `{yuki_prefix}lm` to the file. Installing a module from a file.\n"
             help_text += f"<emoji id=5427009714745517609>✅</emoji> {yuki_prefix}check - Reply `{yuki_prefix}check` to the file check the file for bad practices"
-            help_text += f"<emoji id=5427009714745517609>✅</emoji> {yuki_prefix}eval - `{yuki_prefix}eval` to complete code."
+            help_text += f"<emoji id=5443132326189996902>🧑‍💻</emoji> {yuki_prefix}eval - `{yuki_prefix}eval` to complete code."
 
             await message.edit(help_text)
         except Exception as e:
