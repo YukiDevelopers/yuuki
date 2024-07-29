@@ -117,7 +117,7 @@ async def help_command(app, yuki_prefix):
             help_text += f"<emoji id=5433614747381538714>📤</emoji> {yuki_prefix}unm - `{yuki_prefix}unm` module name - Send module file in chat\n"
             help_text += f"<emoji id=5431721976769027887>📂</emoji> {yuki_prefix}lm - Reply `{yuki_prefix}lm` to the file. Installing a module from a file.\n"
             help_text += f"<emoji id=5427009714745517609>✅</emoji> {yuki_prefix}check - Reply `{yuki_prefix}check` to the file check the file for bad practices"
-            help_text += f"<emoji id=5188666899860298925>🌒</emoji> {yuki_prefix}eval - `{yuki_prefix}eval true` - Run a command in terminal."
+            help_text += f"<emoji id=5443132326189996902>🧑‍💻</emoji> {yuki_prefix}eval - `{yuki_prefix}eval true` - Run a command in terminal."
 
             await message.edit(help_text)
         except Exception as e:
@@ -151,7 +151,7 @@ async def info_command(app, yuki_prefix):
             ram_total, ram_used, ram_percent, system, release, version = get_system_info()
             caption_text = (f"**<emoji id=5431895003821513760>❄️</emoji> 雪 Yuki**\n"
                             f"__🔧Version: 1.2__\n\n"
-                            f"{user.first_name}@yuki-user\n"
+                            f"{message.from_user.first_name}@yuki-user\n"
                             f"      **Uptime:** {uptime}\n"
                             f"      **RAM:** {ram_used:.2f} GB / {ram_total:.2f} GB ({ram_percent}%)\n"
                             f"      **OS:** {system} {release}\n"
