@@ -32,7 +32,6 @@ async def write_json(file_name, data):
     async with aiofiles.open(file_name, mode='w') as file:
         await file.write(json.dumps(data, indent=4))
 
-
 async def init_bot():
     if not os.path.exists(modules_file):
         async with aiofiles.open(modules_file, 'w') as file:
