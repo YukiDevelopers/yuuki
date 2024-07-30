@@ -92,6 +92,9 @@ async def help_command(app, yuki_prefix):
     async def _help_command(_, message):
         try:
             modules, damaged_modules = await load_modules()
+            
+            modules.sort(key=lambda mod: mod.__name__.split('.')[-1])
+            
             help_text = "**<emoji id=5431895003821513760>❄️</emoji> Yuki Userbot Commands <emoji id=5431895003821513760>❄️</emoji>**\n\n"
             help_text += f"**Modules loaded: {len(modules)}**\n"
             for module in modules:
@@ -121,6 +124,7 @@ async def help_command(app, yuki_prefix):
             await message.edit(help_text)
         except Exception as e:
             await message.reply_text(f"An error occurred while executing the help command: {str(e)}")
+
 
 
 def get_system_info():
