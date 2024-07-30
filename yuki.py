@@ -517,6 +517,22 @@ async def eval_command(app, yuki_prefix):
             await message.edit_text("Укажите код для выполнения")
 
 
+async def terminal_command(app, yuki_prefix):
+    @app.on_message(filters.me & filters.command("sh", prefixes=yuki_prefix))
+    async def _terminal_command(_, message):
+        if len(message.command) > 1:
+            command = " ".join(message.command[1:])
+            try:
+                result = subprocess.run(command, shell=True, capture_output=True, text=True)
+                output = result.stdout if result.stdout else result.stderr
+                await message.edit_text(f"Результат:\n```\n{output}\n```")
+            except Exception as e:
+                error_message = ''.join(traceback.format_exception(None, e, e.__traceback__))
+                await message.edit_text(f"Ошибка:\n```\n{error_message}\n```")
+        else:
+            await message.edit_text("Укажите команду для выполнения")
+
+
 async def load_and_exec_modules(app):
     try:
         modules, _ = await load_modules()
