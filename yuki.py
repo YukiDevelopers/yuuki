@@ -561,6 +561,7 @@ def main():
     loop.run_until_complete(update_command(app, yuki_prefix))
     loop.run_until_complete(eval_command(app, yuki_prefix))
     loop.run_until_complete(backup_command(app, yuki_prefix))
+    loop.run_until_complete(terminal_command(app, yuki_prefix))
 
     app.run()
 
