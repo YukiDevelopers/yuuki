@@ -471,6 +471,7 @@ async def backup_command(app, yuki_prefix):
                         modules_list.append(module_name)
                 
                 await write_json(modules_file, modules_list)
+                await message.delete()
                 await message.reply_text("<emoji id=5427009714745517609>✅</emoji> Модули успешно восстановлены из резервной копии.")
             else:
                 modules_list = await read_json(modules_file)
@@ -485,10 +486,12 @@ async def backup_command(app, yuki_prefix):
                 backup_file_path = "modules_backup.json"
                 with open(backup_file_path, 'w') as backup_file:
                     json.dump(backup_data, backup_file, indent=4)
-                
+                    
+                await message.delete()
                 await app.send_document(message.chat.id, backup_file_path, caption="<emoji id=5427009714745517609>✅</emoji> Резервная копия модулей успешно создана.")
                 os.remove(backup_file_path)
         except Exception as e:
+            await message.delete()
             await message.reply_text(f"<emoji id=5465665476971471368>❌</emoji> Произошла ошибка: {str(e)}")
 
 
