@@ -121,7 +121,7 @@ async def help_command(app, yuki_prefix):
             help_text += f"<emoji id=5433614747381538714>📤</emoji> {yuki_prefix}unm - `{yuki_prefix}unm` module name - Send module file in chat\n"
             help_text += f"<emoji id=5431721976769027887>📂</emoji> {yuki_prefix}lm - Reply `{yuki_prefix}lm` to the file. Installing a module from a file.\n"
             help_text += f"<emoji id=5427009714745517609>✅</emoji> {yuki_prefix}check - Reply `{yuki_prefix}check` to the file check the file for bad practices\n"
-            help_text += f"<emoji id=5443132326189996902>🧑‍💻</emoji> {yuki_prefix}eval - `{yuki_prefix}eval true` - Run a command in terminal.\n"
+            help_text += f"<emoji id=5443132326189996902>🧑‍💻</emoji> {yuki_prefix}sh - `{yuki_prefix}sh true` - Run a command in terminal.\n"
             help_text += f"<emoji id=5373330964372004748>📺</emoji> {yuki_prefix}backup - Backup your Yuki."
 
             await message.edit(help_text)
@@ -500,24 +500,6 @@ async def backup_command(app, yuki_prefix):
             await message.reply_text(f"<emoji id=5465665476971471368>❌</emoji> An error occurred: {str(e)}")
 
 
-async def eval_command(app, yuki_prefix):
-    @app.on_message(filters.me & filters.command("eval", prefixes=yuki_prefix))
-    async def _eval_command(_, message):
-        if len(message.command) > 1:
-            code = " ".join(message.command[1:])
-            code_globals = {}
-            code_locals = {}
-            try:
-                exec(f'async def __ex(): ' + '\n '.join(f' {line}' for line in code.split('\n')), code_globals, code_locals)
-                result = await code_locals['__ex']()
-                await message.edit_text(f"Результат: {result}")
-            except Exception as e:
-                error_message = ''.join(traceback.format_exception(None, e, e.__traceback__))
-                await message.edit_text(f"Ошибка:\n```\n{error_message}\n```")
-        else:
-            await message.edit_text("Укажите код для выполнения")
-
-
 async def terminal_command(app, yuki_prefix):
     @app.on_message(filters.me & filters.command("sh", prefixes=yuki_prefix))
     async def _terminal_command(_, message):
@@ -526,12 +508,18 @@ async def terminal_command(app, yuki_prefix):
             try:
                 result = subprocess.run(command, shell=True, capture_output=True, text=True)
                 output = result.stdout if result.stdout else result.stderr
-                await message.edit_text(f"Результат:\n```\n{output}\n```")
+
+                chunk_size = 4096
+                if len(output) > chunk_size:
+                    for i in range(0, len(output), chunk_size):
+                        await message.reply_text(f"<emoji id=5188217332748527444>🔍</emoji> Result (part {i//chunk_size + 1}):\n```\n{output[i:i+chunk_size]}\n```")
+                else:
+                    await message.edit_text(f"<emoji id=5188217332748527444>🔍</emoji> Result:\n```\n{output}\n```")
             except Exception as e:
                 error_message = ''.join(traceback.format_exception(None, e, e.__traceback__))
-                await message.edit_text(f"Ошибка:\n```\n{error_message}\n```")
+                await message.edit_text(f"<emoji id=5465665476971471368>❌</emoji> Error:\n```\n{error_message}\n```")
         else:
-            await message.edit_text("Укажите команду для выполнения")
+            await message.edit_text("<emoji id=5422858869372104873>🙅‍♂️</emoji> Please provide a command to execute")
 
 
 async def load_and_exec_modules(app):
@@ -542,6 +530,7 @@ async def load_and_exec_modules(app):
                 module.register_module(app)
     except Exception as e:
         logger.error(f"An error occurred while loading modules: {str(e)}")
+
 
 def main():
     loop = asyncio.get_event_loop()
@@ -560,7 +549,6 @@ def main():
     loop.run_until_complete(load_module(app, yuki_prefix))
     loop.run_until_complete(check_file(app, yuki_prefix))
     loop.run_until_complete(update_command(app, yuki_prefix))
-    loop.run_until_complete(eval_command(app, yuki_prefix))
     loop.run_until_complete(backup_command(app, yuki_prefix))
     loop.run_until_complete(terminal_command(app, yuki_prefix))
 
