@@ -501,14 +501,18 @@ async def backup_command(app, yuki_prefix):
 
 async def eval_command(app, yuki_prefix):
     @app.on_message(filters.me & filters.command("eval", prefixes=yuki_prefix))
-    async def eval_command(_, message):
+    async def _eval_command(_, message):
         if len(message.command) > 1:
             code = " ".join(message.command[1:])
+            code_globals = {}
+            code_locals = {}
             try:
-                result = eval(code)
+                exec(f'async def __ex(): ' + '\n '.join(f' {line}' for line in code.split('\n')), code_globals, code_locals)
+                result = await code_locals['__ex']()
                 await message.edit_text(f"Результат: {result}")
             except Exception as e:
-                await message.edit_text(f"Ошибка: {e}")
+                error_message = ''.join(traceback.format_exception(None, e, e.__traceback__))
+                await message.edit_text(f"Ошибка:\n```\n{error_message}\n```")
         else:
             await message.edit_text("Укажите код для выполнения")
 
