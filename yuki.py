@@ -14,6 +14,7 @@ import asyncio
 import psutil
 import platform
 import base64
+import subprocess
 
 logging.basicConfig(level=logging.INFO)
 logger = logging.getLogger(__name__)
