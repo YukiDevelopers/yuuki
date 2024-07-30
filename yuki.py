@@ -120,6 +120,7 @@ async def help_command(app, yuki_prefix):
             help_text += f"<emoji id=5431721976769027887>📂</emoji> {yuki_prefix}lm - Reply `{yuki_prefix}lm` to the file. Installing a module from a file.\n"
             help_text += f"<emoji id=5427009714745517609>✅</emoji> {yuki_prefix}check - Reply `{yuki_prefix}check` to the file check the file for bad practices"
             help_text += f"<emoji id=5443132326189996902>🧑‍💻</emoji> {yuki_prefix}eval - `{yuki_prefix}eval true` - Run a command in terminal."
+            help_text += f"<emoji id=5373330964372004748>📺</emoji> {yuki_prefix}backup - Backup your Yuki."
 
             await message.edit(help_text)
         except Exception as e:
@@ -449,6 +450,47 @@ async def addprefix_command(app, yuki_prefix):
             await message.reply_text(f"An error occurred while executing the addprefix command: {str(e)}")
 
 
+async def backup_command(app, yuki_prefix):
+    @app.on_message(filters.me & filters.command("backup", prefixes=yuki_prefix))
+    async def _backup_command(_, message):
+        try:
+            reply = message.reply_to_message
+            if reply and reply.document and reply.document.mime_type == "application/json":
+                file_path = await reply.download()
+                with open(file_path, 'r') as file:
+                    data = json.load(file)
+                
+                modules_list = await read_json(modules_file)
+                for module_name, encoded_content in data.items():
+                    module_file_path = f"{module_name}.py"
+                    with open(module_file_path, 'wb') as module_file:
+                        module_file.write(base64.b64decode(encoded_content))
+                    
+                    if module_name not in modules_list:
+                        modules_list.append(module_name)
+                
+                await write_json(modules_file, modules_list)
+                await message.reply_text("<emoji id=5427009714745517609>✅</emoji> Модули успешно восстановлены из резервной копии.")
+            else:
+                modules_list = await read_json(modules_file)
+                backup_data = {}
+                for module_name in modules_list:
+                    module_file_path = f"{module_name}.py"
+                    if os.path.exists(module_file_path):
+                        with open(module_file_path, 'rb') as module_file:
+                            encoded_content = base64.b64encode(module_file.read()).decode('utf-8')
+                            backup_data[module_name] = encoded_content
+                
+                backup_file_path = "modules_backup.json"
+                with open(backup_file_path, 'w') as backup_file:
+                    json.dump(backup_data, backup_file, indent=4)
+                
+                await app.send_document(message.chat.id, backup_file_path, caption="<emoji id=5427009714745517609>✅</emoji> Резервная копия модулей успешно создана.")
+                os.remove(backup_file_path)
+        except Exception as e:
+            await message.reply_text(f"<emoji id=5465665476971471368>❌</emoji> Произошла ошибка: {str(e)}")
+
+
 async def eval_command(app, yuki_prefix):
     @app.on_message(filters.me & filters.command("eval", prefixes=yuki_prefix))
     async def eval_command(_, message):
@@ -490,6 +532,7 @@ def main():
     loop.run_until_complete(check_file(app, yuki_prefix))
     loop.run_until_complete(update_command(app, yuki_prefix))
     loop.run_until_complete(eval_command(app, yuki_prefix))
+    loop.run_until_complete(backup_command(app, yuki_prefix))
 
     app.run()
 
