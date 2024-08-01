@@ -448,6 +448,7 @@ async def addprefix_command(app, yuki_prefix):
 
             await message.reply_text(f"<emoji id=5427009714745517609>✅</emoji> Prefix successfully changed to `{new_prefix}`.")
             await message.delete()
+            os.execv(sys.executable, [sys.executable] + sys.argv)
         except Exception as e:
             await message.reply_text(f"An error occurred while executing the addprefix command: {str(e)}")
 
