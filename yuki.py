@@ -75,7 +75,7 @@ RISK_METHODS = {
         "log_out", "LogOut"
     ],
     "not_bad": [
-        "torpy", "pyarmor"
+        "torpy", "pyarmor", "os"
     ]
 }
 
