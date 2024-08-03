@@ -230,6 +230,7 @@ async def check_file(app, yuki_prefix):
                     if methods:
                         response_text += f"<emoji id=5470049770997292425>🌡</emoji> {risk_level.capitalize()}: {' '.join(methods)}\n"
                 if response_text:
+                    await message.delete()
                     await message.reply_text(response_text)
                 else:
                     await message.edit("<emoji id=5427009714745517609>✅</emoji> No dangerous methods found in the file.")
