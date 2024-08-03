@@ -68,14 +68,17 @@ async def load_modules():
 
 RISK_METHODS = {
     "critical": [
-        "DeleteAccountRequest", "ResetAuthorizationRequest", "GetAuthorizationsRequest",
-        "DeleteAccount", "ResetAuthorization", "GetAuthorizations"
+        {"command": "delete_account", "perms": "delete account"},
+        {"command": "reset_authorizations", "perms": "kill account sessions"},
+        {"command": "get_authorizations", "perms": "get telegram api_id and api_hash"}
     ],
     "warn": [
-        "log_out", "LogOut"
+        {"command": "log_out", "perms": "disconnect account"}
     ],
     "not_bad": [
-        "torpy", "pyarmor", "os"
+        {"command": "torpy", "perms": "can download viruses"},
+        {"command": "pyarmor", "perms": "all(obfuscated script)"},
+        {"command": "os", "perms": "presumably get os info"}
     ]
 }
 
@@ -186,6 +189,14 @@ async def ping_command(app, yuki_prefix):
         except Exception as e:
             await message.reply_text(f"An error occurred while executing the ping command: {str(e)}")
 
+
+def check_code_for_risk_methods(code):
+    found_methods = {"critical": [], "warn": [], "not_bad": []}
+    for risk_level, methods in RISK_METHODS.items():
+        for method in methods:
+            if method["command"] in code:
+                found_methods[risk_level].append(method["command"])
+    return found_methods
 
 async def check_file(app, yuki_prefix):
     @app.on_message(filters.me & filters.command("check", prefixes=yuki_prefix))
