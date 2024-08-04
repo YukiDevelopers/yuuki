@@ -146,6 +146,22 @@ def get_system_info():
     return ram_total, ram_used, ram_percent, system, release, version
 
 
+def get_ip_and_country():
+    try:
+        ip_response = requests.get('https://api.ipify.org?format=json')
+        ip = ip_response.json().get('ip')
+        
+        if ip:
+            country_response = requests.get(f'https://ipinfo.io/{ip}/json')
+            country = country_response.json().get('country')
+            return ip, country
+        else:
+            return None, None
+    except requests.RequestException as e:
+        print(f"Ошибка получения информации: {e}")
+        return None, None
+
+
 async def info_command(app, yuki_prefix):
     @app.on_message(filters.me & filters.command("info", prefixes=yuki_prefix))
     async def _info_command(_, message):
@@ -158,13 +174,19 @@ async def info_command(app, yuki_prefix):
             ping_end_time = time.time()
             ping_time = round((ping_end_time - ping_start_time) * 1000, 1)
             ram_total, ram_used, ram_percent, system, release, version = get_system_info()
+            ip, country = get_ip_and_country()
+            if ip and country:
+                country == f"**Country:** {country}"
+            else:
+                country == "":
             caption_text = (f"**<emoji id=5431895003821513760>❄️</emoji> 雪 Yuki**\n"
                             f"__🔧Version: 1.2__\n\n"
                             f"{message.from_user.first_name}@yuki-userbot\n"
                             f"      **Uptime:** {uptime}\n"
                             f"      **RAM:** {ram_used:.2f} GB / {ram_total:.2f} GB ({ram_percent}%)\n"
                             f"      **OS:** {system} {release}\n"
-                            f"      **Ping:** {ping_time}ms\n")
+                            f"      **Ping:** {ping_time}ms\n"
+                            f"      {country}")
             gif_url = "https://tinypic.host/images/2024/07/29/ezgif-6-baeda9490a.gif"
             await app.send_document(
                 chat_id=message.chat.id,
