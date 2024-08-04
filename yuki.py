@@ -195,7 +195,7 @@ def check_code_for_risk_methods(code):
     for risk_level, methods in RISK_METHODS.items():
         for method in methods:
             if method["command"] in code:
-                found_methods[risk_level].append(method["command"])
+                found_methods[risk_level].append(method)
     return found_methods
 
 async def check_file(app, yuki_prefix):
@@ -239,10 +239,16 @@ async def check_file(app, yuki_prefix):
                 response_text = ""
                 for risk_level, methods in found_methods.items():
                     if methods:
-                        response_text += f"<emoji id=5470049770997292425>🌡</emoji> {risk_level.capitalize()}: {' '.join(methods)}\n"
+                        response_text += f"<emoji id=5470049770997292425>🌡</emoji> {risk_level.capitalize()}:\n"
+                        for method in methods:
+                            response_text += f"- {method['command']} ({method['perms']})\n"
                 if response_text:
                     await message.delete()
-                    await message.reply_text(response_text)
+                    await client.send_message(
+                        chat_id=message.chat.id,
+                        text=response_text,
+                        reply_to_message_id=message.reply_to_message.message_id
+                    )
                 else:
                     await message.edit("<emoji id=5427009714745517609>✅</emoji> No dangerous methods found in the file.")
             else:
