@@ -233,7 +233,7 @@ async def check_file(app, yuki_prefix):
 
             if file_path:
                 await message.edit("<emoji id=5188666899860298925>🌒</emoji> Checking the file...")
-                await asyncio.sleep(1)
+                await asyncio.sleep(1.5)
 
                 with open(file_path, 'r', encoding='utf-8') as file:
                     content = file.read()
