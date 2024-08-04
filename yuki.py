@@ -243,12 +243,7 @@ async def check_file(app, yuki_prefix):
                         for method in methods:
                             response_text += f"- {method['command']} ({method['perms']})\n"
                 if response_text:
-                    await message.delete()
-                    await client.send_message(
-                        chat_id=message.chat.id,
-                        text=response_text,
-                        reply_to_message_id=message.reply_to_message.message_id
-                    )
+                    await message.edit(response_text)
                 else:
                     await message.edit("<emoji id=5427009714745517609>✅</emoji> No dangerous methods found in the file.")
             else:
